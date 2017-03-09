@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Survey</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+</head>
+<body>
+<div class="container">
+  <h3>Latest Survey!</h3>
+  <ul>
+    <% if(survey) { %>
+      <li><%= 'Name: ' + survey.name%></li>
+      <li><%= 'Location: ' + survey.location%></li>
+      <li><%= 'Language: ' + survey.language%></li>
+      <li><%= 'Comment: ' + survey.comment%></li>
+    <% } else { %>
+        <li>No Surveys Yet</li>
+    <% } %>
+  </ul>
+
+  <a class="btn-flat" href="/">Return Home</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "Testing Express with EJS",
+  "version": "0.0.1",
+  "main": "index.ejs",
+  "description": "",
+  "keywords": [],
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "esj": "*",
+    "express": "latest",
+    "express-session": "latest"
+  }
+}

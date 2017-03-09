@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Landing</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+</head>
+<body>
+<div class="container">
+  <h3>Simple Survey</h3>
+  <form method="post" action="survey_post" class="row">
+    <div class="col s12">
+      <input id="name" name="name">
+      <label for="name">Enter Your Name</label>
+      <input id="location" name="location">
+      <label for="location">Enter Your Location</label>
+      <input id="language" name="language">
+      <label for="language">Enter Favorite Language</label>
+      <textarea id="comment" name="comment"></textarea>
+      <label for="comment">Add a Comment</label>
+    </div>
+  <button class="btn-flat">Submit</button>
+    <a class="btn-flat" href="/survey">Latest Survey</a>
+  </form>
+
+</div>
+</body>
+</html>

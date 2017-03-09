@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Id Page</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+</head>
+<body>
+<div class="container">
+<% if (user){ %>
+    <%= "User Found!"%>
+<h3> <%= 'Name: ' + user.name %></h3>
+<h4> <%= 'Email: '+ user.email %></h4>
+<% } else { %>
+<h1><%= " Sorry This User Isn't in the DB"%></h1>
+<% }%>
+
+<% if(session.name) { %>
+<h5> <%= 'Current User Name: ' +  session.name %></h5>
+<h5> <%= 'Current User Email: ' + session.email %></h5>
+<% } %>
+<a href="/users" class="btn-flat">Back to Users</a>
+<a href="/" class="btn-flat">Back to Home</a>
+</div>
+</body>
+</html>

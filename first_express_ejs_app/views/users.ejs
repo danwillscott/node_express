@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+</head>
+<body>
+<div class="container">
+<div class="row">
+    <div class="col s6 card">
+        <% if(session.name) {%>
+        <h5> <%= 'Current User Name: ' +  session.name %></h5>
+        <h5> <%= 'Current User Email: ' + session.email %></h5>
+        <% } %>
+        <h3>Here are all the users:</h3>
+
+        <ul>
+            <% for (var i = 0; i < users.length; i++) { %>
+            <li>Name: <%= users[i].name %></li>
+            <li>Email: <%= users[i].email %></li>
+            <li><a class="btn-flat" href="user_id/<%= users[i].id%>"> Go to User</a> <a class="btn-flat" href="delete/<%= users[i].id%>">Delete</a></li>
+            <li></li>
+            <% } %>
+
+            <% for (var i = 0; i < new_users.length; i++) { %>
+            <li>Name: <%= new_users[i].name %></li>
+            <li>Email: <%= new_users[i].email %></li>
+            <li><a class="btn-flat" href="user_id/<%= new_users[i].id%>"> Go to User</a><a class="btn-flat" href="delete/<%= new_users[i].id%>">Delete</a></li>
+            <li> </li>
+            <% } %>
+        </ul>
+    </div>
+</div>
+
+<form action='/users_post' method='post' class="row">
+    <div class="col s6">
+    Name: <input type='text' name='name'>
+    Email: <input type='text' name='email'>
+    <input class="btn-flat" type='submit' value='create user'>
+    <a href="/" class="btn-flat">Return Home</a>
+    </div>
+</form>
+
+
+</div>
+</body>
+</html>

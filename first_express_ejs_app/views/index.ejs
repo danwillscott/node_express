@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1>Data Base less awesomeness</h1>
+    <% if(session.name) {%>
+    <h5> <%= 'Current User Name: ' +  session.name %></h5>
+    <h5> <%= 'Current User Email: ' + session.email %></h5>
+    <% } %>
+    <a href="/users" class="btn-flat">Users Page</a>
+    <a href="/user_id/9" class="btn-flat">User id page fixed Id</a>
+</div>
+</body>
+</html>
