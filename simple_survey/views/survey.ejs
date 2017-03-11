@@ -11,15 +11,14 @@
   <h3>Latest Survey!</h3>
   <ul>
     <% if(survey) { %>
-      <li><%= 'Name: ' + survey.name%></li>
-      <li><%= 'Location: ' + survey.location%></li>
-      <li><%= 'Language: ' + survey.language%></li>
-      <li><%= 'Comment: ' + survey.comment%></li>
+      <li><%= 'Name: ' + survey.name %></li>
+      <li><%= 'Location: ' + survey.location %></li>
+      <li><%= 'Language: ' + survey.language %></li>
+      <li><%= 'Comment: ' + survey.comment %></li>
     <% } else { %>
         <li>No Surveys Yet</li>
     <% } %>
   </ul>
-
   <a class="btn-flat" href="/">Return Home</a>
 </div>
 </body>

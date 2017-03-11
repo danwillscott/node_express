@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+  <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+  <script type ="text/javascript">
+      $(document).ready(function (){
+          // this triggers the connection event in our server!
+          let socket = io.connect();
+          $( "form" ).on( "submit", function( event ) {
+              let form_data = $( this ).serializeArray();
+              socket.emit("form_submit", {form_data: form_data});
+              $('input').val('')
+              $('textarea').val('')
+              event.preventDefault();
+          });
+          socket.on('return_form', function (data){
+              console.log('Emit From Server => The server says: ' + data.response);
+              $('tbody').append($('<tr>')).append($('<td>').text(data.response[0].value))
+                  .append($('<td>').text(data.response[2].value));
+
+          });
+
+          $('.kill').on('click', function (event) {
+              $('tbody').empty()
+          });
+      })
+  </script>
+</head>
+<body>
+<div class="container">
+  <div class="row">
+    <form action="" class="col s6">
+      <div class="card gray">
+        <div class="card-content black-text">
+          <span class="card-title">Submit a Form</span>
+          <div class="row">
+            <div class="input-field col s6">
+              <input name="name" id="name" type="text" class="validate empty">
+              <label class="active" for="name">Name</label>
+            </div>
+            <div class="input-field col s6">
+              <input name="location" id="location" type="text" class="validate">
+              <label class="active" for="location">Location</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s6">
+              <input name="favorite" id="favorite" type="text" class="validate">
+              <label class="active" for="favorite">Favorite</label>
+            </div>
+            <div class="input-field black-text col s12">
+              <textarea placeholder="Add A Comment" name="comment" id="text" type="text" class="validate"></textarea>
+              <label class="active" for="text"></label>
+            </div>
+          </div>
+        </div>
+        <div class="card-action">
+          <button class="btn-flat teal lighten-2">Submit Socket Form</button>
+          <button type="reset" class="btn-flat red">Reset</button>
+        </div>
+      </div>
+    </form>
+    <div class="col s6">
+      <div class="card teal">
+        <div class="card-content">
+          <span class="white-text">
+
+            <table>
+              <thead>
+              <tr>
+                <th data-field="name">Name</th>
+                <th data-field="location">Location</th>
+                <th data-field="favorite">Favorite</th>
+                <th data-field="comment">Comment</th>
+              </tr>
+              </thead>
+              <tbody>
+              </tbody>
+          </table>
+          </span>
+        </div>
+        <div class="card-action">
+          <button class="btn-flat red kill" id="kill">Remove Surveys</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

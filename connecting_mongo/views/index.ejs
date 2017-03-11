@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mongoose</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+  <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+  <style>
+    .card-content{
+      overflow: scroll !important;
+    }
+  </style>
+  <script type ="text/javascript">
+      $(document).ready(function (){
+          $(document).on('click', '#user_alerts', function (event) {
+              console.log('here')
+              $('.user-alert').empty()
+          })
+
+
+          $('.show_users').hide()
+          // this triggers the connection event in our server!
+          let socket = io.connect();
+//          New User section
+          $( "#new_user" ).on( "submit", function( event ) {
+              let form_data = $( this ).serializeArray();
+//              console.log(form_data);
+              socket.emit("form_submit", {form_data: form_data});
+              $('input').val('')
+              event.preventDefault();
+          });
+          socket.on('return_form', function (data){
+//              if(data.age.message && data.name.message){
+//
+//
+//              } else {
+                  $('.user_table').append($("<tr>").append($('<td>').text(data.name))
+                      .append($('<td>').text(data.age))
+                      .append($('<td>').html("<button class='btn-flat red lighten-1 remove_user' value='" + data._id + "' >Delete</button>")));
+
+//              }
+              console.log(data.age.message)
+//              console.log('Emit From Server => The server says: ' + data.form_data);
+
+          });
+//          End New User Section
+//          New Quote Section
+          $( ".new_quote" ).on( "submit", function( event ) {
+              let form_data = $( this ).serializeArray();
+              socket.emit("quote_submit", {form_data: form_data});
+              $(this).children().children().children().children().children().val('');
+              event.preventDefault();
+          });
+          socket.on('return_quote', function (data){
+              console.log('Emit From Server => The server says: ' + data.quote_data);
+              $('.quote_table').append($('<tr>').append($('<td>').text(data.name))
+                  .append($('<td>').text(data.quote))
+                  .append($('<td>').html("<button class='btn-flat red lighten-1 remove_quote' value='" + data._id + "' >Delete</button>")));
+
+          });
+//          End New Quote Section
+
+
+//          Hide Displayed Users
+          $('.hide_users').on('click', function (event) {
+              $(this).hide()
+              $('.show_users').show()
+              $('tbody').hide()
+          });
+          $('.show_users').on('click', function (event) {
+              $(this).hide()
+              $('.hide_users').show()
+              $('tbody').show()
+          });
+//          Remove Displayed User
+          $(document).on('click', '.remove_user', function (event) {
+              let button_id = $(this).val();
+              console.log(button_id);
+              socket.emit('remove_user', {user: button_id})
+              $(this).parent().parent().remove() // Removes Element on page
+          })
+//           Remove Quote
+          $(document).on('click', '.remove_quote', function (event) {
+
+              let button_id = $(this).val();
+              console.log(button_id);
+              socket.emit('remove_quote', {quote: button_id})
+              $(this).parent().parent().remove() // Removes Element on page
+          })
+      })
+  </script>
+</head>
+<body>
+<div class="container">
+  <div class="row">
+    <form id="new_user" method="post" action="users" class="col s12 m6 new_user">
+      <div class="card small blue-grey darken-1">
+        <div class="card-content white-text">
+          <span class="card-title">Add User<span class="user-alert"> Test</span></span>
+          <div class="row">
+            <div class="input-field col s6">
+              <input name="name" id="name" type="text" class="validate">
+              <label for="name">Name</label>
+            </div>
+            <div class="input-field col s6">
+              <input name="age" id="age" type="text" class="validate">
+              <label for="age">Age</label>
+            </div>
+          </div>
+        </div>
+        <div class="card-action">
+          <button class="btn-flat light-green">Submit</button>
+          <button class="btn-flat red" type="reset">Reset</button>
+        </div>
+      </div>
+    </form>
+    <!--Card 2-->
+    <form method="post" action="quote" class="col s12 m6 new_quote">
+      <div class="card small blue-grey darken-1">
+        <div class="card-content white-text">
+          <span class="card-title">Make A Quote</span>
+          <div class="row">
+            <div class="input-field col s12 user_alerts">
+              <input name="name" id="name user_input" type="text" class="validate">
+              <label for="name">Name</label>
+            </div>
+            <div class="input-field col s12">
+              <textarea name="quote" id="age user_input" type="text" class="validate materialize-textarea"></textarea>
+              <label for="quote">Quote</label>
+            </div>
+          </div>
+        </div>
+        <div class="card-action">
+          <button class="btn-flat light-green">Submit</button>
+          <button class="btn-flat red" type="reset">Reset</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="row">
+    <div class="col s12 m6">
+      <div class="card small">
+        <div class="card-content">
+          <span class="card-title center-aligna">All Users</span>
+            <span class="black-text">
+              <table class="scroll-table">
+                <thead>
+                <tr>
+                  <th data-field="name">Name</th>
+                  <th data-field="age">Age</th>
+                  <th data-field="id">Action</th>
+                </tr>
+                </thead>
+                <tbody class="user_table">
+                <% if(users) { %>
+                  <% for(var i = 0; i < users.length; i += 1){ %>
+                  <tr>
+                    <td><%= users[i].name %></td>
+                    <td><%= users[i].age %></td>
+                    <td><button class="btn-flat red lighten-1 remove_user" value="<%= users[i].id %>">Delete</button></td>
+                  </tr>
+                  <% } %>
+                <% } %>
+                </tbody>
+            </table>
+            </span>
+        </div>
+
+      </div>
+      <!--<button class="btn-flat yellow hide_users" id="hide_users">Hide Users</button>-->
+      <!--<button class="btn-flat green show_users" id="show_users">Show Users</button>-->
+    </div>
+    <div class="col s12 m6">
+      <div class="card small">
+        <div class="card-content">
+          <span class="card-title center-aligna">All Users</span>
+            <span class="black-text">
+
+              <table class="scroll-table">
+                <thead>
+                <tr>
+                  <th data-field="name">Name</th>
+                  <th data-field="age">Age</th>
+                  <th data-field="id">Action</th>
+                </tr>
+                </thead>
+                <tbody class="quote_table">
+                <% if(quotes) { %>
+                  <% for(let quote in quotes){ %>
+                  <tr>
+                    <td><%= quotes[quote].name %></td>
+                    <td><%= quotes[quote].quote %></td>
+                    <td><button class="btn-flat red lighten-1 remove_quote" value="<%= quotes[quote].id %>">Delete</button></td>
+                  </tr>
+                  <% } %>
+                <% } %>
+                </tbody>
+            </table>
+            </span>
+        </div>
+        <!--<div class="card-action">-->
+          <!--<button class="btn-flat yellow hide_users" id="hide_quotes">Hide Quotes</button>-->
+          <!--<button class="btn-flat green show_users" id="show_quotes">Show Quotes</button>-->
+        <!--</div>-->
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

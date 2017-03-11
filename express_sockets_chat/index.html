@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+  <title>Socket.IO chat</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+</head>
+<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+    $(function () {
+        let socket = io();
+        $('#message').submit(function(){
+            socket.emit('chat message', $('#m').val());
+            $('#m').val('');
+            return false;
+        });
+        socket.on('chat message', function(msg, session){
+            $('#messages').append($('<li>').text("from: " + msg));
+            $('p').empty().append($('<li>').text("Last Message: " + session));
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+    });
+    $(function () {
+        let socket = io();
+        $('').submit(function(){
+            socket.emit('chat message', $('#m').val());
+            $('#m').val('');
+            return false;
+        });
+        socket.on('chat message', function(msg){
+            $('').append($('<li>').text("from: " + msg));
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+    });
+</script>
+<body>
+<div class="container">
+  <h2>Chat Time</h2>
+  <ul id="messages"></ul>
+  <form id="message" action="">
+    <input id="m" autocomplete="off" /><button class="btn">Send</button>
+  </form>
+  <div>
+    <p></p>
+  </div>
+</div>
+</body>
+</html>
