@@ -44,7 +44,7 @@ app.get('/', function(req, res) {
             if(users){
                 res.render('index', {users: users, quotes: quotes});
             }else{
-                res.render('index', {users: {}});
+                res.render('index', {users: {}, quotes: {}});
             }
         }).exec();
     }).exec();
@@ -62,17 +62,18 @@ let io = require('socket.io').listen(server);
 
 io.sockets.on('connection', function (socket) {
 //      New User Socket
-    socket.on("form_submit", function (data){
+    socket.on("user_submit", function (data){
         let user = new User({name: data.form_data[0].value, age: data.form_data[1].value});
         // console.log(user +  ' User Data');
         user.save(function(err) {
             if(err){
-                socket.emit('return_form',  user.errors);
+                socket.emit('return_user',  {user: user.errors, errors: true});
             } else {
-                socket.emit('return_form',  user);
+                socket.emit('return_user',  {user: user, errors: false});
             }
         });
     });
+
 
 //      Remove User
     socket.on('remove_user', function (data) {
@@ -83,13 +84,13 @@ io.sockets.on('connection', function (socket) {
 //      New Quote
     socket.on('quote_submit', function (data) {
         let quote = new Quote({name: data.form_data[0].value, quote: data.form_data[1].value})
-        console.log(quote);
         quote.save(function(err) {
-
-            // console.log(err.message);
+            if(err){
+                socket.emit('return_quote', {quote: quote.errors, errors: true})
+            } else {
+                socket.emit('return_quote', {quote: quote, errors: false});
+            }
         });
-        console.log(quote);
-        socket.emit('return_quote', quote)
     });
 
 //      Remove Quote
@@ -108,36 +109,4 @@ io.sockets.on('connection', function (socket) {
             ************************
             ***** SLUDGE FIELD *****
             ************************
-
- let quote = new Quote({name: 'Dan', quote: 'This is a sweet Quote!'});
- console.log(quote);
- quote.save(function(err) {});
-
-
-
-let users = User.find({}, function(err, users) {
-});
-
-
-Add User Request
-app.post('/users', function(req, res) {
-    console.log("POST DATA", req.body);
-    // create a new User with the name and age corresponding to those from req.body
-    let user = new User({name: req.body.name, age: req.body.age});
-    // Try to save that new user to the database (this is the method that actually inserts into the db) and run a callback function with an error (if any) from the operation.
-    user.save(function(err) {
-        // if there is an error console.log that something went wrong!
-        if(err) {
-            console.log('something went wrong');
-        } else { // else console.log that we did well and then redirect to the root route
-            console.log('successfully added a user!');
-            res.redirect('/');
-        }
-    })
-});
-
-
-
-
-
  */

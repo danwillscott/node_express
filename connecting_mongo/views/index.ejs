@@ -14,99 +14,99 @@
   </style>
   <script type ="text/javascript">
       $(document).ready(function (){
-          $(document).on('click', '#user_alerts', function (event) {
-              console.log('here')
-              $('.user-alert').empty()
+          $(document).on('click', 'input', function (event) {
+              $(this).siblings('label').empty();
+          })
+          $(document).on('click', 'textarea', function (event) {
+              $(this).siblings('label').empty()
           })
 
-
           $('.show_users').hide()
-          // this triggers the connection event in our server!
+
           let socket = io.connect();
 //          New User section
           $( "#new_user" ).on( "submit", function( event ) {
               let form_data = $( this ).serializeArray();
 //              console.log(form_data);
-              socket.emit("form_submit", {form_data: form_data});
+              socket.emit("user_submit", {form_data: form_data});
               $('input').val('')
               event.preventDefault();
           });
-          socket.on('return_form', function (data){
-//              if(data.age.message && data.name.message){
-//
-//
-//              } else {
-                  $('.user_table').append($("<tr>").append($('<td>').text(data.name))
-                      .append($('<td>').text(data.age))
-                      .append($('<td>').html("<button class='btn-flat red lighten-1 remove_user' value='" + data._id + "' >Delete</button>")));
-
-//              }
-              console.log(data.age.message)
-//              console.log('Emit From Server => The server says: ' + data.form_data);
-
+//          Get Data From Server
+          socket.on('return_user', function (data){
+              $('.user-alert').empty()
+              if(data.errors){
+                  if(data.user.name){
+                      $('.user-alert-name').append(' ' + data.user.name.message)
+                  }
+                  if(data.user.age){
+                      $('.user-alert-age').append(' ' + data.user.age.message)
+                  }
+              } else {
+                  $('.user_table').append($("<tr>").append($('<td>').text(data.user.name))
+                      .append($('<td>').text(data.user.age))
+                      .append($('<td>').html("<button class='btn-flat red lighten-1 remove_user' value='" + data.user._id + "' >Delete</button>")));
+              }
           });
 //          End New User Section
 //          New Quote Section
+//          Emit Data To Server
           $( ".new_quote" ).on( "submit", function( event ) {
               let form_data = $( this ).serializeArray();
               socket.emit("quote_submit", {form_data: form_data});
               $(this).children().children().children().children().children().val('');
               event.preventDefault();
           });
+//          Get Data From Server
           socket.on('return_quote', function (data){
-              console.log('Emit From Server => The server says: ' + data.quote_data);
-              $('.quote_table').append($('<tr>').append($('<td>').text(data.name))
-                  .append($('<td>').text(data.quote))
-                  .append($('<td>').html("<button class='btn-flat red lighten-1 remove_quote' value='" + data._id + "' >Delete</button>")));
+              $('.quote-alert').empty()
+              if(data.errors){
+                  if(data.quote.name){
+                      $('.quote-alert-name').append(data.quote.name.message)
+                  }
+                  if(data.quote.quote){
+                      $('.quote-alert-quote').append(data.quote.quote.message)
+                  }
+              } else {
+                  $('.quote_table').append($('<tr>').append($('<td>').text(data.quote.name))
+                      .append($('<td>').text(data.quote.quote))
+                      .append($('<td>').html("<button class='btn-flat red lighten-1 remove_quote' value='" + data.quote._id + "' >Delete</button>")));
+              }
+
 
           });
 //          End New Quote Section
 
-
-//          Hide Displayed Users
-          $('.hide_users').on('click', function (event) {
-              $(this).hide()
-              $('.show_users').show()
-              $('tbody').hide()
-          });
-          $('.show_users').on('click', function (event) {
-              $(this).hide()
-              $('.hide_users').show()
-              $('tbody').show()
-          });
-//          Remove Displayed User
+//          Remove User Emit
           $(document).on('click', '.remove_user', function (event) {
               let button_id = $(this).val();
-              console.log(button_id);
               socket.emit('remove_user', {user: button_id})
               $(this).parent().parent().remove() // Removes Element on page
           })
-//           Remove Quote
+//           Remove Quote Emit
           $(document).on('click', '.remove_quote', function (event) {
-
               let button_id = $(this).val();
-              console.log(button_id);
               socket.emit('remove_quote', {quote: button_id})
               $(this).parent().parent().remove() // Removes Element on page
           })
       })
   </script>
 </head>
-<body>
+<body class="grey lighten-2">
 <div class="container">
   <div class="row">
     <form id="new_user" method="post" action="users" class="col s12 m6 new_user">
-      <div class="card small blue-grey darken-1">
+      <div class="card small z-depth-5 blue-grey darken-1">
         <div class="card-content white-text">
-          <span class="card-title">Add User<span class="user-alert"> Test</span></span>
+          <span class="card-title">Add User</span>
           <div class="row">
             <div class="input-field col s6">
-              <input name="name" id="name" type="text" class="validate">
-              <label for="name">Name</label>
+              <input placeholder="Name" name="name" id="name" type="text" class="validate">
+              <label for="age" class="user-alert user-alert-name red-text"></label>
             </div>
             <div class="input-field col s6">
-              <input name="age" id="age" type="text" class="validate">
-              <label for="age">Age</label>
+              <input placeholder="Age" name="age" id="age" type="text" class="validate">
+              <label for="age" class="user-alert user-alert-age red-text"></label>
             </div>
           </div>
         </div>
@@ -118,17 +118,17 @@
     </form>
     <!--Card 2-->
     <form method="post" action="quote" class="col s12 m6 new_quote">
-      <div class="card small blue-grey darken-1">
+      <div class="card small z-depth-5 blue-grey darken-1">
         <div class="card-content white-text">
           <span class="card-title">Make A Quote</span>
           <div class="row">
             <div class="input-field col s12 user_alerts">
-              <input name="name" id="name user_input" type="text" class="validate">
-              <label for="name">Name</label>
+              <input placeholder="Name" name="name" id="name user_input" type="text" class="validate">
+              <label for="name" class="quote-alert quote-alert-name red-text"></label>
             </div>
             <div class="input-field col s12">
-              <textarea name="quote" id="age user_input" type="text" class="validate materialize-textarea"></textarea>
-              <label for="quote">Quote</label>
+              <textarea placeholder="Quote" name="quote" id="age user_input" type="text" class="validate materialize-textarea"></textarea>
+              <label for="quote" class="quote-alert quote-alert-quote red-text"></label>
             </div>
           </div>
         </div>
@@ -141,7 +141,7 @@
   </div>
   <div class="row">
     <div class="col s12 m6">
-      <div class="card small">
+      <div class="card z-depth-5 small">
         <div class="card-content">
           <span class="card-title center-aligna">All Users</span>
             <span class="black-text">
@@ -169,11 +169,9 @@
         </div>
 
       </div>
-      <!--<button class="btn-flat yellow hide_users" id="hide_users">Hide Users</button>-->
-      <!--<button class="btn-flat green show_users" id="show_users">Show Users</button>-->
     </div>
     <div class="col s12 m6">
-      <div class="card small">
+      <div class="card z-depth-5 small">
         <div class="card-content">
           <span class="card-title center-aligna">All Users</span>
             <span class="black-text">
@@ -200,10 +198,6 @@
             </table>
             </span>
         </div>
-        <!--<div class="card-action">-->
-          <!--<button class="btn-flat yellow hide_users" id="hide_quotes">Hide Quotes</button>-->
-          <!--<button class="btn-flat green show_users" id="show_quotes">Show Quotes</button>-->
-        <!--</div>-->
       </div>
     </div>
   </div>
