@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Main</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+  <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+  <script>
+    $(document).ready(function(){
+
+    });
+  </script>
+</head>
+<body>
+<div class="container">
+  <h4>Here are the awesome quotes!</h4>
+    <% for (var i in quotes) { %>
+  <h5>Name: <%= quotes[i].name %> </h5>
+  <h5>Quote: <%= quotes[i].quote %> </h5>
+  <hr>
+    <% } %>
+  <a href="/" role="button">Home<i class="material-icons left">home</i></a>
+</div>
+</body>
+</html>

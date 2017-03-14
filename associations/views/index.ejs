@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Associations</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+  <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="script" href="/static/index.js">
+</head>
+<body>
+<nav class="nav-wrapper  blue-grey darken-1">
+  <a class="brand-logo center">Make A Post Or Comment Below</a>
+</nav>
+<div class="container">
+  <h3> </h3>
+  <div class="row">
+    <form method="post" action="/new_post" class="col offset-m3 s12 m6">
+      <div class="row">
+        <div class="input-field col s12">
+          <i class="material-icons prefix">mode_edit</i>
+          <textarea placeholder="Make A Post" name="new_post" id="post-text" class="materialize-textarea"></textarea>
+          <label for="post-text" class="post-error red-text"><%= flash_message %></label>
+          <button class="btn-flat right"><i class="material-icons right">send</i>Post</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="row">
+  <% for(let post in find_post){ %>
+
+    <div class="col s6">
+      <div class="divider"></div>
+      <div class="section">
+        <h4>Post: <%= find_post[post].text %></h4>
+        <% if(find_post[post].comments[0]) { %>
+          <% for(let x = 0; x < find_post[post].comments.length; x += 1) { %>
+              <p><strong>Comment: <%= find_post[post].comments[x].text%></strong> On: <%= find_post[post].comments[x].createdAt.toDateString() %></p>
+          <% } %>
+        <% } %>
+        <form method="post" action="/new_comment">
+          <div class="row">
+            <div class="input-field col s12">
+              <p><strong>Add A Comment</strong></p>
+              <i class="material-icons prefix">mode_edit</i>
+              <textarea placeholder="Make A Comment" name="new_comment" id="comment-text" class="materialize-textarea"></textarea>
+              <input type="hidden" name="post_id" value="<%= find_post[post]._id %>">
+              <label for="comment-text" class="comment-error red-text"></label>
+              <button class="btn-flat right"><i class="material-icons right">send</i>Comment</button>
+            </div>
+            <p class="right">Posted On: <%= find_post[post].createdAt.toDateString() %></p>
+          </div>
+        </form>
+        <!--<button class="btn-flat red-text" value="<%= find_post[post]._id %>">Remove</button>-->
+      </div>
+    </div>
+
+  <% } %>
+  </div>
+</div>
+</body>
+</html>

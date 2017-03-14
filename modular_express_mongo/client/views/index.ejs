@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Express Modular</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+  <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+  <script>
+    $(document).ready(function(){
+        $('textarea').trigger('autoresize');
+    });
+  </script>
+</head>
+<body>
+<div class="container">
+<h2>Express broken up</h2>
+  <form class='form' action='/quotes' method='post'>
+    <input class='form-control' placeholder="Enter Your Name" type='text' name='name'>
+    <textarea class='form-control materialize-textarea' type='text' placeholder="Enter A Quote" name='quote'></textarea>
+    <button type="submit" class="btn-flat">Submit<i class="material-icons right">send</i></button>
+    <a href="/main" role="button"><i class="material-icons">format_quote</i>Quotes<i class="material-icons">format_quote</i></a>
+  </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "associations",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "latest",
+    "ejs": "latest",
+    "body-parser": "latest",
+    "mongoose": "latest",
+    "socket.io": "latest",
+    "connect-flash": "latest",
+    "express-session": "latest",
+    "cookie-parser": "latest"
+  }
+}
