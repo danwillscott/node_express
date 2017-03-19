@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="friends">
+<head>
+  <meta charset="UTF-8">
+  <title>Filter Friends</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+  <script src='bower_components/angular/angular.js'></script>
+  <script type="application/javascript">
+      let friendApp = angular.module('friends', []);
+      friendApp.controller('friendController', function() {
+          this.friends = [
+              {name: 'Dan', age: 30, gender: 'Male'},
+              {name: 'Jon', age: 45, gender: 'Male'},
+              {name: 'Ben', age: 19, gender: 'Male'},
+              {name: 'Chris', age: 12, gender: 'Male'},
+              {name: 'Joe', age: 91, gender: 'Male'},
+              {name: 'Bill', age: 55, gender: 'Male'},
+              {name: 'Josh', age: 164, gender: 'Male'},
+              {name: 'Kate', age: 20, gender: 'Female'},
+              {name: 'Hanna', age: 17, gender: 'Female'},
+              {name: 'Ruth', age: 50, gender: 'Female'},
+              {name: 'Liz', age: 3, gender: 'Female'},
+          ];
+          this.removeFriend = function (index) {
+              this.friends.splice(index, 1);
+          };
+      });
+  </script>
+</head>
+<body ng-controller="friendController as FC">
+  <div class="container">
+    <h2>There are {{FC.friends.length}} Friends to search through!</h2>
+    <div class="row">
+      <div class="col s3">
+
+      </div>
+      <div class="col s6">
+        <input ng-model="searching" placeholder="Find A Friend" type="search" id="friend_search">
+        <label for="friend_search">Search by Name Age Or Gender </label>
+        <p> Order By: </p>
+        <p>
+          <input ng-model="reversed" value="-" type="checkbox" id="reverse">
+          <label for="reverse">Reverse</label>
+          <input ng-model="ordering" name="group1" value="name" type="radio" id="name" class="active">
+          <label for="name">Name</label>
+          <input ng-model="ordering" name="group1" value="age" type="radio" id="age">
+          <label for="age">Age</label>
+          <input ng-model="ordering" name="group1" value="gender" type="radio" id="gender">
+          <label for="gender">Gender</label>
+          <input ng-model="ordering" name="group1" value="" type="radio" id="none">
+          <label for="none">None</label>
+        </p>
+      </div>
+    </div>
+    <table class="z-depth-1 centered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Gender</th>
+      </tr>
+      </thead>
+      <tbody ng-if="reversed">
+      <tr ng-repeat="friend in FC.friends | orderBy:'-'+ordering | filter:searching as results  ">
+        <td>{{friend.name}}</td>
+        <td>{{friend.age}}</td>
+        <td>{{friend.gender}}</td>
+      </tr>
+      <tbody ng-if="!reversed">
+      <tr ng-repeat="friend in FC.friends | orderBy:ordering | filter:searching as results  ">
+        <td>{{friend.name}}</td>
+        <td>{{friend.age}}</td>
+        <td>{{friend.gender}}</td>
+      </tr>
+      <tr ng-if="results.length === 0">
+        <td>No Friends Found!</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

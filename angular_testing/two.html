@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+  <meta charset="UTF-8">
+  <title>Two way Binding</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+  <script src='bower_components/angular/angular.js'></script>
+  <script>
+    let app = angular.module('app', []);
+    app.controller('myController', ['$scope', function ($scope) {
+
+        $scope.thing = 'Ham!';
+        $scope.printController = function () {
+            console.log($scope);
+            return $scope
+        }
+    }]);
+    app.controller('test', function () {
+        this.someVal = 'SuperTest'
+    })
+  </script>
+</head>
+<body>
+<div class="container" ng-controller = "myController" id="myController">
+  <input id="dynamic" type="text" ng-model = 'myModel'>
+  <label for="dynamic"></label>
+  <label>
+    ng-model = "myModel"
+  </label>
+  <div ng-controller="test as T">
+  <p>{{ thing }}</p>
+  <p>{{ T.someVal }}</p>
+  </div>
+  <p>
+    When we type in our input, the $scope.myModel object is created in our controller (two way binding), even though we didn't declare it in our intial model description
+  </p>
+  <div id ='model' ng-if = "myModel">
+        <span>
+          ***INPUT: {{myModel}}***
+        </span>
+    <b>
+      If you click the button, you will get the $scope object.  Find myModel in it!  Refresh the page and don't enter anything into the input field and see if you can find myModel..., and printController
+    </b>
+  </div>
+  <button class="btn" ng-click = "printController();">
+    Show our $scope!
+  </button>
+</div>
+</body>
+</html>

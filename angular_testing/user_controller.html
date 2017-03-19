@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html ng-app='userController'>
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+  <script src='bower_components/angular/angular.js'></script>
+  <script type='text/javascript'>
+      let myAppModule = angular.module('userController', []);
+      myAppModule.controller('users', function (){
+          this.users = [
+
+          ];
+          this.addUser = function(){
+              this.users.push(this.newUser);
+              this.newUser = {};
+          };
+          this.header = "User Controller";
+          this.removeUser = function (index) {
+              this.users.splice(index, 1);
+          };
+      });
+  </script>
+</head>
+<body>
+<div class="container" ng-controller='users as U'>
+  <h1>{{ U.header }}</h1>
+  <table class="centered">
+    <thead>
+    <tr>
+      <th data-field="first_name">First Name</th>
+      <th data-field="last_name">Last Name</th>
+      <th data-field="favorite_language">Favorite Language</th>
+      <th data-field="action">Action</th>
+    </tr>
+    </thead>
+    <tbody >
+    <tr ng-repeat="user in U.users track by $index">
+      <td>{{ user.name }}</td>
+      <td>{{ user.age }}</td>
+      <td>{{ user.language }}</td>
+      <td><button class="btn-flat" ng-click="U.removeUser($index)">Remove User</button></td>
+    </tr>
+    </tbody>
+  </table>
+  <h3>Add A New User!</h3>
+  <form>
+    <input placeholder="First Name" id="first_name" type='text' ng-model='U.newUser.name'>
+    <label for="first_name"></label>
+    <input placeholder="Last Name" id="last_name" type='text'  ng-model='U.newUser.age'>
+    <label for="last_name"></label>
+    <input placeholder="Favorite Language" id="favorite_language" type='text' ng-model='U.newUser.language'>
+    <label for="favorite_language"></label>
+    <input class="btn" type='submit' value='Add User' ng-click='U.addUser()'>
+  </form>
+</div>
+</body>
+</html>

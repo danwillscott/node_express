@@ -1,0 +1,25 @@
+<div ng-controller="allUsersController as ALL">
+  <div class="card">
+    <div class="card-content blue-grey z-depth-2">
+    <div class="card-title">All Users</div>
+      <table class="centered">
+        <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Company</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="user in ALL.users | orderBy:'firstName'">
+          <td ng-bind="user.firstName"></td>
+          <td ng-bind="user.lastName"></td>
+          <td ng-bind="user.company"></td>
+          <td><a class="btn-flat waves-effect green" type="submit">Look At User</a></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

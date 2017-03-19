@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html ng-app='myApp'>
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+  <script src='bower_components/angular/angular.js'></script>
+  <script type='text/javascript'>
+      let myAppModule = angular.module('myApp', []);
+      myAppModule.controller('studentsController', function (){
+          this.students = [
+
+          ];
+          this.addStudent = function(){
+              this.students.push(this.newStudent);
+              this.newStudent = {};
+          };
+          this.header = "Lets Rock It!"
+      });
+  </script>
+</head>
+<body>
+<div class="container" ng-controller='studentsController as SC'>
+  <h1>{{ SC.header }}</h1>
+  <table>
+    <thead>
+    <tr>
+      <th data-field="name">Name</th>
+      <th data-field="age">Age</th>
+      <th data-field="location">Location</th>
+      <th data-field="food">Favorite Food</th>
+    </tr>
+    </thead>
+    <tbody >
+    <tr ng-repeat="student in SC.students">
+      <td>{{ student.name }}</td>
+      <td>{{ student.age }}</td>
+      <td>{{ student.location }}</td>
+      <td>{{ student.food }}</td>
+    </tr>
+    </tbody>
+  </table>
+  <h3>Add a new student!</h3>
+  <form>
+    <input placeholder="Name" id="name" type='text' ng-model='SC.newStudent.name'>
+    <label for="name"></label>
+    <input placeholder="Age" id="age" type='text'  ng-model='SC.newStudent.age'>
+    <label for="age"></label>
+    <input placeholder="Location" id="location" type='text'  ng-model='SC.newStudent.location'>
+    <label for="location"></label>
+    <input placeholder="Favorite Food" id="food" type='text'  ng-model='SC.newStudent.food'>
+    <label for="food"></label>
+    <input class="btn" type='submit' value='add new student' ng-click='SC.addStudent()'>
+  </form>
+</div>
+</body>
+</html>

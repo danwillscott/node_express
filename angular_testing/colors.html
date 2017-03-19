@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="colorApp">
+<head>
+  <meta charset="UTF-8">
+  <title>Color Filter</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+  <script src='bower_components/angular/angular.js'></script>
+  <script src='colors.js'></script>
+  <script type="application/javascript">
+    const colorTime = angular.module('colorApp', []);
+    colorTime.controller('colorController', function () {
+        this.color = colors;
+    })
+  </script>
+</head>
+<body ng-controller="colorController as CC">
+  <div class="container">
+    <input ng-model="find_color" id="color_search" placeholder="Search for a color">
+    <label for="color_search">Search by name or hex value</label>
+    <table>
+      <thead>
+      <tr>
+        <th>Color</th>
+        <th>Hex</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="color in CC.color | filter:find_color">
+        <td>{{color.value}}</td>
+        <td>{{color.name}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<div ng-controller="usersController as UC">
+  <div class="card">
+    <div class="card-content blue-grey z-depth-2">
+      <div class="card-title"> Manage Users </div>
+      <form>
+        <label class="black-text" for="firstName">First Name</label>
+        <input id="firstName" type="text" ng-model="UC.newUser.firstName"/><br>
+        <label class="black-text" for="lastName">Last Name</label>
+        <input id="lastName" type="text" ng-model="UC.newUser.lastName"/><br>
+        <label class="black-text" for="language">Company</label>
+        <input id="language" type="text" ng-model="UC.newUser.company"/><br>
+        <!--When the button is clicked, run the create function-->
+        <button class="btn-flat waves-effect green" type="submit" ng-click="UC.createUser()">Create user</button>
+      </form>
+      <table class="centered">
+        <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Company</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="user in UC.users">
+          <td>{{user.firstName}}</td>
+          <td>{{user.lastName}}</td>
+          <td>{{user.company}}</td>
+          <!--When the button is clicked, run the delete function-->
+          <td><button class="btn-flat red waves-effect" ng-click="UC.removeUser(user)">Delete User</button></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

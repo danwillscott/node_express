@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="products">
+<head>
+  <meta charset="UTF-8">
+  <title>Product And Ordering</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+  <script src='bower_components/angular/angular.js'></script>
+  <script type="application/javascript">
+      let productApp = angular.module('products', []);
+      productApp.controller('productsController', ['$scope', 'productFactory',function ($scope, productFactory) {
+          this.new_product = {};
+          this.productList = productFactory.products;
+
+          this.controllerAdd = function () {
+              productFactory.addProduct(this.new_product);
+              this.new_product = {};
+          };
+          this.controllerRemove = function (index) {
+              productFactory.removeProduct(index);
+          };
+
+      }]);
+
+      productApp.controller('orderController', ['$scope', 'productFactory', function ($scope, productFactory) {
+          this.productList = productFactory.products;
+          this.buyError = '';
+
+          this.buyProduct = function (index) {
+              this.buyError = productFactory.buyProduct(index);
+          };
+
+      }]);
+
+      productApp.factory('productFactory', function () {
+          let factory = {};
+          factory.products = [
+              {name:'Keyboard', price: 149.99, quantity: 50, id: 0},
+              {name:'Mouse', price: 59.99, quantity: 50, id: 1},
+              {name:'Window', price: 16.00, quantity: 50, id: 1},
+              {name:'Dog', price: 39.79, quantity: 50, id: 1},
+              {name:'House', price: 5.99, quantity: 50, id: 1},
+              {name:'Chicken', price: 9.99, quantity: 50, id: 1},
+              {name:'Goat', price: 66.99, quantity: 50, id: 1},
+              {name:'Tv', price: 89.99, quantity: 50, id: 1},
+              {name:'Heater', price: 54.99, quantity: 50, id: 1},
+              {name:'Book', price: 29.99, quantity: 50, id: 1},
+              {name:'Sofa', price: 51.99, quantity: 50, id: 1},
+              {name:'Door', price: 129.99, quantity: 50, id: 1},
+              {name:'Computer', price: 599.99, quantity: 50, id: 1},
+              {name:'Space Ship', price: 2259.99, quantity: 50, id: 1},
+              {name:'Hat', price: 539.99, quantity: 50, id: 1},
+              {name:'Gold Taco', price: 579.99, quantity: 50, id: 1},
+              {name:'Basketball', price: 21.99, quantity: 50, id: 2}];
+          factory.addProduct = function (productObj) {
+              if(productObj.name > '' && productObj.price > ''){
+                  productObj.id = factory.products.length;
+                  productObj.price = parseFloat(productObj.price);
+                  productObj.quantity = 50;
+                  console.log(productObj);
+                  factory.products.push(productObj);
+              } else if (productObj.name > '' && productObj.price < ''){
+
+              }
+          };
+          factory.removeProduct = function (product) {
+              factory.products.splice(factory.products.indexOf(product), 1);
+          };
+          factory.buyProduct = function (product) {
+              let foundProduct = factory.products[factory.products.indexOf(product)];
+              if(foundProduct.quantity === 0){
+                  return "Product Sold Out"
+              } else {
+                  foundProduct.quantity -= 1
+              }
+          };
+          return factory;
+
+      });
+  </script>
+</head>
+<body >
+<div class="container">
+  <div ng-controller="productsController as PC">
+  <h4 class="center">Product Controller</h4>
+  <div class="row">
+    <div class="col s3"></div>
+    <form name="form" class="col s6">
+      <label for="product_name">Enter a Product Name</label>
+      <input type="text" placeholder="Name" id="product_name" name="name" ng-model="PC.new_product.name" required="">
+
+      <div ng-show="form.$submitted || form.name.$touched">
+        <span class="red-text" ng-show="form.name.$error.required">Product Name Required</span>
+      </div>
+
+      <label for="product_price">Enter a Product Price</label>
+      <input type="number" name="price" placeholder="Number Only" id="product_price" ng-model="PC.new_product.price" required="" min="0.01">
+      <div ng-show="form.$submitted || form.price.$touched">
+        <span class="red-text" ng-show="form.price.$error.required">Minimum price of $0.01 required</span>
+      </div>
+
+      <button class="btn-flat" ng-click="PC.controllerAdd()">Add Product</button>
+    </form>
+  </div>
+  <div class="row">
+    <div class="col s3"></div>
+    <div class="col s6 center">
+      <div class="card black-text">
+        <div class="card-title">Order By</div>
+        <div class="card-content">
+          <input ng-model="reversed" value="true" type="checkbox" id="reverse">
+          <label for="reverse">Reverse Order</label>
+          <input ng-model="productOrder" value="name" name="ordering" type="radio" id="name">
+          <label for="name">Name</label>
+          <input ng-model="productOrder" value="price" name="ordering" type="radio" id="price">
+          <label for="price">Price</label>
+          <input ng-model="productOrder" value="$index" name="ordering" type="radio" id="none">
+          <label for="none">None</label>
+        </div>
+      </div>
+      <table class="centered">
+        <thead>
+        <tr>
+          <th>Product Name</th>
+          <th>Product Price</th>
+          <th>Product Action</th>
+        </tr>
+        </thead>
+        <tbody ng-if="reversed">
+        <tr ng-repeat="product in PC.productList | orderBy:'-'+productOrder">
+          <td>{{product.name}}</td>
+          <td>{{product.price | currency}}</td>
+          <td id="{{product.id}}"><button class="btn-flat" value="{{product.id}}" ng-click="PC.controllerRemove(product)">Remove</button></td>
+        </tr>
+        </tbody>
+        <tbody ng-if="!reversed">
+        <tr ng-repeat="product in PC.productList | orderBy:productOrder">
+          <td>{{product.name}}</td>
+          <td>{{product.price | currency}}</td>
+          <td id="{{product.name}}"><button class="btn-flat" value="{{product.name}}" ng-click="PC.controllerRemove(product)">Remove</button></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+  <h4 class="center">Order Controller</h4>
+  <div class="row">
+    <div class="col s3"></div>
+    <div class="col s6 center">
+  <div ng-controller="orderController as OC">
+    <div class="card black-text">
+      <div class="card-title">Order By</div>
+      <div class="card-content">
+        <input ng-model="buyReversed" value="true" type="checkbox" id="buyReverse">
+        <label for="buyReverse">Reverse Order</label>
+        <input ng-model="buyOrder" value="name" name="buy" type="radio" id="buyName">
+        <label for="buyName">Name</label>
+        <input ng-model="buyOrder" value="price" name="buy" type="radio" id="buyPrice">
+        <label for="buyPrice">Price</label>
+        <input ng-model="buyOrder" value="quantity" name="buy" type="radio" id="buyQuantity">
+        <label for="buyQuantity">Quantity</label>
+        <input ng-model="buyOrder" value="$index" name="buy" type="radio" id="buyNone">
+        <label for="buyNone">None</label>
+      </div>
+    </div>
+    <table class="centered">
+      <thead>
+      <tr>
+        <th>Product Name</th>
+        <th>Product Price</th>
+        <th>Product Quantity</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+      <tbody ng-if="buyReversed">
+      <tr ng-repeat="product in OC.productList | orderBy:'-'+buyOrder">
+        <td>{{product.name}}</td>
+        <td>{{product.price | currency}}</td>
+        <td>{{product.quantity}}</td>
+        <td ng-if="product.quantity === 0 ">Sold Out</td>
+        <td class="{{product.name}}" ng-if="product.quantity > 0 "><button class="btn-flat" value="{{product}}" ng-click="OC.buyProduct(product.id)">Buy</button></td>
+      </tr>
+      </tbody>
+      <tbody ng-if="!buyReversed">
+      <tr ng-repeat="product in OC.productList | orderBy:buyOrder">
+        <td>{{product.name}}</td>
+        <td>{{product.price | currency}}</td>
+        <td>{{product.quantity}}</td>
+        <td ng-if="product.quantity === 0 ">Sold Out</td>
+        <td class="" ng-if="product.quantity > 0 "><button class="btn-flat" value="{{product.name}}" ng-click="OC.buyProduct(product)">Buy</button></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  </div>
+  </div>
+</div>
+<footer class="page-footer">
+  <div class="container">
+    <div class="row">
+      <div class="col l6 s12">
+        <h5 class="white-text">Footer Content</h5>
+        <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
+      </div>
+      <div class="col l4 offset-l2 s12">
+        <h5 class="white-text">Links</h5>
+      </div>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    <div class="container">
+      © 2014 Copyright Text
+      <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
